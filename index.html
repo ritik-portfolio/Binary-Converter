@@ -1,185 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Hacker Binary Converter</title>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hacker Binary Converter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
     body {
-        background: #000;
-        color: #0f0;
-        font-family: 'Share Tech Mono', monospace;
-        min-height: 100vh;
-        padding: 0;
-        margin: 0;
-        overflow-x: hidden;
-        position: relative;
+      background: #000;
+      color: #0f0;
+      font-family: 'Share Tech Mono', monospace;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
     }
     canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 0;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
     }
-    .container {
-        position: relative;
-        z-index: 1;
-        border: 2px solid #0f0;
-        padding: 24px;
-        border-radius: 8px;
-        box-shadow: 0 0 20px #0f0;
-        max-width: 520px;
-        width: 100%;
-        margin: 40px auto;
-        background: rgba(0,0,0,0.7);
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 24px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px solid #0f0;
+      border-radius: 12px;
+      box-shadow: 0 0 30px #0f0;
     }
     h1 {
-        text-align: center;
-        margin-bottom: 16px;
-        text-shadow: 0 0 8px #0f0;
-        font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 24px;
+      text-shadow: 0 0 8px #0f0;
+      font-size: 1.8rem;
     }
-    textarea {
-        width: 100%;
-        height: 120px;
-        padding: 12px;
-        border-radius: 4px;
-        border: 1px solid #0f0;
-        background: #000;
-        color: #0f0;
-        resize: none;
-        font-size: 1rem;
-        box-shadow: inset 0 0 8px #0f0;
-        margin-bottom: 16px;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
-    textarea::placeholder {
-        color: #0f07;
-    }
-    .buttons {
-        text-align: center;
-    }
-    button {
-        background: transparent;
-        border: 1px solid #0f0;
-        padding: 8px 16px;
-        color: #0f0;
-        cursor: pointer;
-        margin: 4px;
-        border-radius: 4px;
-        transition: all 0.3s ease;
-        font-family: inherit;
-        text-shadow: 0 0 4px #0f0;
-    }
-    button:hover {
-        background: #0f0;
-        color: #000;
-        box-shadow: 0 0 10px #0f0;
+    textarea, .output {
+      width: 100%;
+      height: 200px;
+      background: black;
+      border: 1px solid #0f0;
+      border-radius: 8px;
+      padding: 12px;
+      color: #0f0;
+      font-size: 1rem;
+      resize: none;
+      box-shadow: inset 0 0 10px #0f0;
+      scroll-behavior: smooth;
     }
     .output {
-        background: #000;
-        padding: 12px;
-        border-radius: 4px;
-        border: 1px solid #0f0;
-        min-height: 60px;
-        white-space: pre-wrap;
-        word-break: break-word;
-        margin-top: 16px;
-        box-shadow: inset 0 0 8px #0f0;
+      white-space: pre-wrap;
+      overflow-y: auto;
+    }
+    .controls {
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      background: transparent;
+      border: 1px solid #0f0;
+      color: #0f0;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.3s;
+      flex: 1;
+      min-width: 140px;
+    }
+    button:hover {
+      background: #0f0;
+      color: black;
+      box-shadow: 0 0 10px #0f0;
     }
     .about {
-        margin-top: 40px;
-        padding: 20px;
-        border: 1px solid #0f0;
-        border-radius: 8px;
-        background: rgba(0,0,0,0.7);
-        box-shadow: 0 0 10px #0f0;
+      margin-top: 40px;
+      padding: 20px;
+      border: 1px solid #0f0;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.7);
+      box-shadow: 0 0 10px #0f0;
+      text-align: center;
     }
     .about h2 {
-        text-align: center;
-        margin-bottom: 12px;
-        text-shadow: 0 0 8px #0f0;
+      text-shadow: 0 0 8px #0f0;
     }
-    .about p {
-        margin: 8px 0;
-        text-align: center;
+    .about p, .about a {
+      margin: 6px 0;
+      color: #0f0;
     }
-    a {
-        color: #0f0;
-        text-decoration: underline;
+    a { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      textarea, .output {
+        height: 160px;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      button {
+        width: 100%;
+      }
     }
-</style>
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: black;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #0f0;
+      border-radius: 10px;
+      border: 2px solid black;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #4f4;
+    }
+
+    textarea:focus, button:focus {
+      outline: none;
+      box-shadow: 0 0 10px #0f0, inset 0 0 10px #0f0;
+      border-color: #0f0;
+    }
+  </style>
 </head>
 <body>
 
 <canvas id="matrix"></canvas>
 
-<div class="container">
-    <h1>Hacker Binary Converter</h1>
-    <textarea id="inputArea" placeholder="Type your text or binary..."></textarea>
-    <div class="buttons">
-        <button onclick="textToBinary()">Text → Binary</button>
-        <button onclick="binaryToText()">Binary → Text</button>
-    </div>
+<div class="wrapper">
+  <h1>Hacker Binary ↔ Text Converter</h1>
+  <div class="grid">
+    <textarea id="inputArea" placeholder="Enter text or binary..."></textarea>
     <div class="output" id="outputArea">Output will appear here...</div>
+  </div>
 
-    <!-- About Developer Section -->
-    <div class="about">
-        <h2>About Developer</h2>
-        <p><strong>Name:</strong> RITIK KUMAR</p>
-        <p><strong>Email:</strong> <a href="mailto:cs23ritik@rbmi.in">cs23ritik@rbmi.in</a></p>
-        <p><strong>Phone:</strong> +91 9808470386</p>
-        <p><strong>GitHub:</strong> <a href="https://github.com/ritik-portfolio" target="_blank">RITIK-KUMAR</a></p>
-        <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/ritik-kumar-ba7931293" target="_blank">RITIK-KUMAR</a></p>
-    </div>
+  <div class="controls">
+    <button onclick="textToBinary()">Text → Binary</button>
+    <button onclick="binaryToText()">Binary → Text</button>
+    <button onclick="copyOutput()">Copy Output</button>
+  </div>
+
+  <div class="about">
+    <h2>About Developer</h2>
+    <p><strong>Name:</strong> Ritik Kumar</p>
+    <p><strong>Email:</strong> <a href="mailto:cs23ritik@rbmi.in">cs23ritik@rbmi.in</a></p>
+    <p><strong>Phone:</strong> +91 9808470386</p>
+    <p><strong>GitHub:</strong> <a href="https://github.com/ritik-portfolio" target="_blank">ritik-portfolio</a></p>
+    <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/ritik-kumar-ba7931293" target="_blank">ritik-kumar</a></p>
+  </div>
 </div>
 
 <script>
+const input = document.getElementById('inputArea');
+const output = document.getElementById('outputArea');
+
 function textToBinary() {
-    const input = document.getElementById('inputArea').value;
-    const binary = input
-        .split('')
-        .map(char => char.charCodeAt(0).toString(2).padStart(8, '0'))
-        .join(' ');
-    document.getElementById('outputArea').textContent = binary;
+  const val = input.value.trim();
+  const binary = val.split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+  output.textContent = binary;
 }
 
 function binaryToText() {
-    const input = document.getElementById('inputArea').value.trim();
-    const chars = input.split(/\s+/).map(bin => String.fromCharCode(parseInt(bin, 2)));
-    document.getElementById('outputArea').textContent = chars.join('');
+  const val = input.value.trim();
+  if (/^[01\s]+$/.test(val)) {
+    const text = val.split(/\s+/).map(b => String.fromCharCode(parseInt(b, 2))).join('');
+    output.textContent = text;
+  } else {
+    output.textContent = '❌ Invalid binary input!';
+  }
 }
 
-// Matrix rain effect
+function copyOutput() {
+  navigator.clipboard.writeText(output.textContent).then(() => alert("✅ Output copied!"));
+}
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    textToBinary();
+  }
+  if (e.ctrlKey && e.key === 'Backspace') {
+    binaryToText();
+  }
+});
+
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-
-const columns = Math.floor(canvas.width / 20);
-const drops = new Array(columns).fill(1);
+let cols = Math.floor(canvas.width / 20);
+let drops = new Array(cols).fill(1);
 
 function drawMatrix() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#0f0';
-    ctx.font = '20px monospace';
-    for (let i = 0; i < columns; i++) {
-        const text = Math.random() > 0.5 ? '0' : '1';
-        ctx.fillText(text, i * 20, drops[i] * 20);
-        if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-        }
-        drops[i]++;
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0f0';
+  ctx.font = '20px monospace';
+  for (let i = 0; i < drops.length; i++) {
+    const char = Math.random() > 0.5 ? '0' : '1';
+    ctx.fillText(char, i * 20, drops[i] * 20);
+    if (drops[i] * 20 > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
     }
+    drops[i]++;
+  }
 }
 setInterval(drawMatrix, 50);
-
 window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  cols = Math.floor(canvas.width / 20);
+  drops = new Array(cols).fill(1);
 });
 </script>
 
